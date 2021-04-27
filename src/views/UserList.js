@@ -1,8 +1,12 @@
-import React from 'react';
-import users from '../data/users';
+import React, { useContext } from 'react';
 import { View, Alert } from 'react-native';
 import Accordion from '../components/Accordion';
+import UsersContext from '../context/UsersContext';
+
 export default props => {
+  
+  const { state, dispatch } = useContext(UsersContext)
+  
   const options = [
     {
       label: 'Editar',
@@ -18,7 +22,10 @@ export default props => {
       {
         text: 'Sim',
         onPress() {
-          console.warn('delete', JSON.stringify(user))
+          dispatch({
+            type: 'deleteUser',
+            payload: user,
+          })
         }
       },
       {
@@ -30,7 +37,7 @@ export default props => {
 
   return (
     <View>
-      {users.map((el, id) => (<Accordion key={id} user={el} options={options} />))}
+      {state.users.map((el, id) => (<Accordion key={id} user={el} options={options} />))}
     </View>
   );
 };
