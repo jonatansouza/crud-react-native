@@ -1,31 +1,36 @@
-import * as React from 'react';
+import React from 'react';
 import users from '../data/users';
-import {Text, View, FlatList} from 'react-native';
-import {ListItem, Avatar} from 'react-native-elements';
-
+import { View, Alert } from 'react-native';
+import Accordion from '../components/Accordion';
 export default props => {
-  function getUserItem({item: user}) {
-    return (
-      <ListItem 
-        key={user.id}
-        bottomDivider
-        onPress={() => props.navigation.navigate('UserForm')}>
-        <Avatar source={{uri: user.avatarUrl}} />
-        <ListItem.Content>
-          <ListItem.Title>{user.name}</ListItem.Title>
-          <ListItem.Subtitle>{user.email}</ListItem.Subtitle>
-        </ListItem.Content>
-      </ListItem>
-    );
+  const options = [
+    {
+      label: 'Editar',
+      handler: (user) => props.navigation.navigate('UserForm', user)
+    },
+    {
+      label: 'Excluir',
+      handler: (user) => confirmUserDeletion(user)
+    }
+  ];
+  function confirmUserDeletion(user) {
+    Alert.alert('Excluir Usuário', 'Deseja excluir ' + user.name + '?',  [
+      {
+        text: 'Sim',
+        onPress() {
+          console.warn('delete', JSON.stringify(user))
+        }
+      },
+      {
+        text: 'Não',
+
+      }
+    ])
   }
 
   return (
     <View>
-      <FlatList
-        keyExtractor={user => user.id.toString()}
-        data={users}
-        renderItem={getUserItem}
-      />
+      {users.map((el, id) => (<Accordion key={id} user={el} options={options} />))}
     </View>
   );
 };
